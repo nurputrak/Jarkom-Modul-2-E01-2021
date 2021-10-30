@@ -476,3 +476,24 @@ Menambahkan penggantian error ke dokumen html pada baris terakhir.
 `lynx http://www.super.franky.e01.com/ngasal`
 
 ![soal12](https://user-images.githubusercontent.com/65794806/139522257-981de7ab-e35c-4e24-bf23-4ffc5119a704.png)
+
+## 13
+
+> Luffy juga meminta Nami untuk dibuatkan konfigurasi virtual host. Virtual host ini bertujuan untuk dapat mengakses file asset www.super.franky.yyy.com/public/js menjadi www.super.franky.yyy.com/js.
+
+## 14
+
+> Dan Luffy meminta untuk web www.general.mecha.franky.yyy.com hanya bisa diakses dengan port 15000 dan port 15500.
+
+## 15
+
+> Dengan authentikasi username luffy dan password onepiece dan file di /var/www/general.mecha.franky.yyy.
+
+## 16
+
+> Dan setiap kali mengakses IP Skypie akan diahlikan secara otomatis ke www.franky.yyy.com.
+
+## 17
+
+> Dikarenakan Franky juga ingin mengajak temannya untuk dapat menghubunginya melalui website www.super.franky.yyy.com, dan dikarenakan pengunjung web server pasti akan bingung dengan randomnya images yang ada, maka Franky juga meminta untuk mengganti request gambar yang memiliki substring “franky” akan diarahkan menuju franky.png. Maka bantulah Luffy untuk membuat konfigurasi dns dan web server ini!
+
