@@ -6,6 +6,26 @@
 
 Script: https://github.com/theodorusclarence/jarkom-shift2-gns
 
+### List
+
+1. [Soal 1](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#1)
+2. [Soal 2](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#2)
+3. [Soal 3](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#3)
+4. [Soal 4](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#4)
+5. [Soal 5](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#5)
+6. [Soal 6](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#6)
+7. [Soal 7](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#7)
+8. [Soal 8](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#8)
+9. [Soal 9](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#9)
+10. [Soal 10](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#10)
+11. [Soal 11](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#11)
+12. [Soal 12](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#12)
+13. [Soal 13](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#13)
+14. [Soal 14](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#14)
+15. [Soal 15](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#15)
+16. [Soal 16](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#16)
+17. [Soal 17](https://github.com/nurputrak/Jarkom-Modul-2-E01-2021#17)
+
 ## 1
 
 > EniesLobby akan dijadikan sebagai DNS Master, Water7 akan dijadikan DNS Slave, dan Skypie akan digunakan sebagai Web Server. Terdapat 2 Client yaitu Loguetown, dan Alabasta. Semua node terhubung pada router Foosha, sehingga dapat mengakses internet.
