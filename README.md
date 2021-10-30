@@ -671,4 +671,5 @@ Untuk bisa merewrite, maka kita harus menambahkan `AllowOverride`
 
 ### Kendala Pengerjaan
 
-Untuk pengerjaan ini kami belum menemukan kendala.
+1. Waktu awal bingung untuk pembuatan script.sh nya.
+2. Beberapa soal perlu direvisi kembali agar mendapatkan hasil yang benar.
