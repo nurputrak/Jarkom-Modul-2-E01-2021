@@ -34,17 +34,12 @@ zone "franky.e01.com" {
     type master;
     file "/etc/bind/kaizoku/franky.e01.com";
     allow-transfer { 192.200.2.3; }; // Masukan IP Water7 tanpa tanda petik
-    // bikin jadi slave
-    // also-notify { 192.200.2.3; };
-    // notify yes;
 };
 
 zone "2.200.192.in-addr.arpa" {
     type master;
     file "/etc/bind/kaizoku/2.200.192.in-addr.arpa";
 };
-
-// ini zone in addr arpa sebenernya belom kepake, nanti dipake di nomor 4
 ```
 `cp modul1/named.conf.local /etc/bind/named.conf.local`
 
@@ -94,7 +89,7 @@ www     IN      CNAME   franky.e01.com.
 super   IN      A       192.200.2.4
 www.super IN    CNAME   super.franky.e01.com.
 ```
-Kemudian menambahkan `ping super.franky.e01.com` dan `ping www.super.franky.e01.com` pada 2 line paling bawah. Hasilnya sebagai berikut.
+Kemudian menjalankan `ping super.franky.e01.com` dan `ping www.super.franky.e01.com` pada 2 line paling bawah. Hasilnya sebagai berikut.
 
 ![soal3](https://user-images.githubusercontent.com/65794806/139520648-e5e6b609-2937-43e9-831e-c7785aaa0d67.png)
 
@@ -150,28 +145,6 @@ zone "2.200.192.in-addr.arpa" {
 };
 ```
 Menyalakan notify
-
-**Water7 run script.sh**
-```shell
-echo "nameserver 192.168.122.1" > /etc/resolv.conf
-
-apt-get update
-apt-get install bind9 -y
-echo "# nameserver 192.168.122.1
-nameserver 192.200.2.2
-nameserver 192.200.2.3" > /etc/resolv.conf
-```
-
-**Water7 modul1/named.conf.local**
-```shell
-// SLAVE
-zone "franky.e01.com" {
-    type slave;
-    masters { 192.200.2.2; }; // Masukan IP EniesLobby tanpa tanda petik
-    file "/var/lib/bind/franky.e01..com";
-};
-```
-`cp modul1/named.conf.local /etc/bind/named.conf.local`
 
 ![soal5 1](https://user-images.githubusercontent.com/65794806/139520902-586295cf-99a4-4017-a2eb-6f0a738a8622.png)
 
@@ -322,6 +295,7 @@ $TTL    604800
 ```
 
 Install apache2 & php di water7 dan memasukkan dokumen htmlnya.
+
 **Skypie modul1/franky.e01.com**
 ```bash
 <VirtualHost *:80>
@@ -398,7 +372,6 @@ Membuat alias dari home yang akan mengarah ke index.php/home
         ...
 </VirtualHost>
 ```
-Clone file github `git config --global http.sslVerify false`
 
 cek lynx ke super.franky.e01.com
 `lynx http://www.super.franky.e01.com`
@@ -422,11 +395,11 @@ Selanjutnya merupakan directory listing untuk public, dengan menambah directory 
         ServerAdmin webmaster@localhost
         DocumentRoot /var/www/super.franky.e01.com
 
-				<Directory /var/www/super.franky.e01.com>
+	<Directory /var/www/super.franky.e01.com>
                 Options +Indexes
         </Directory>
 
-				<Directory /var/www/super.franky.e01.com/error>
+	<Directory /var/www/super.franky.e01.com/error>
                 Options -Indexes
         </Directory>
 
@@ -437,6 +410,8 @@ Selanjutnya merupakan directory listing untuk public, dengan menambah directory 
         CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
+
+error dimatikan indexnya karena yang dibutuhkan pada public
 
 `lynx http://www.super.franky.e01.com/public`
 
@@ -473,6 +448,8 @@ Menambahkan penggantian error ke dokumen html pada baris terakhir.
 </VirtualHost>
 ```
 
+menambahkan custom error document
+
 `lynx http://www.super.franky.e01.com/ngasal`
 
 ![soal12](https://user-images.githubusercontent.com/65794806/139522257-981de7ab-e35c-4e24-bf23-4ffc5119a704.png)
@@ -506,6 +483,8 @@ Menambahkan penggantian error ke dokumen html pada baris terakhir.
         ErrorDocument 404 /error/404.html
 </VirtualHost>
 ```
+
+Menambahkan alias
 
 `lynx http://www.super.franky.e01.com/js`
 
@@ -552,48 +531,16 @@ Listen 15500
 
 ![soal14_2](https://user-images.githubusercontent.com/57633103/139523232-6858e5e5-cde8-4bd9-bb34-8fa6cc5b131d.png)
 
-**Script Skypie**
-```bash
-echo "nameserver 192.168.122.1" > /etc/resolv.conf
-apt-get install apache2 -y
-apt-get install php -y
-apt-get install libapache2-mod-php7.0 -y
-
-service apache2 start
-
-cp modul1/franky.e01.com.conf /etc/apache2/sites-available/franky.e01.com.conf
-cp -r file-www/franky.e01.com /var/www/
-
-# config untuk super.franky.e01.com
-cp modul1/super.franky.e01.com.conf /etc/apache2/sites-available/super.franky.e01.com.conf
-cp -r file-www/super.franky.e01.com /var/www/
-
-# config untuk general.mecha.franky.e01.com
-cp modul1/general.mecha.franky.e01.com-15000.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15000.conf
-cp modul1/general.mecha.franky.e01.com-15500.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15500.conf
-cp modul1/ports.conf /etc/apache2/ports.conf
-
-cp -r file-www/general.mecha.franky.e01.com /var/www/
-
-# Turn on all sites
-cd /etc/apache2/sites-available
-a2ensite franky.e01.com
-a2ensite super.franky.e01.com
-a2ensite general.mecha.franky.e01-15000.com
-a2ensite general.mecha.franky.e01-15500.com
-
-
-service apache2 restart
-```
-
 ## 15
 
 > Dengan authentikasi username luffy dan password onepiece dan file di /var/www/general.mecha.franky.yyy.
 [https://www.digitalocean.com/community/tutorials/how-to-set-up-password-authentication-with-apache-on-ubuntu-14-04](url)
 
-Awal-awal bikin `htpasswd -c /etc/apache2/.htpasswd luffy`
+Pertama, membuat `htpasswd -c /etc/apache2/.htpasswd luffy`
 luffy : onepiece
-nanti ada di **/etc/apache2/.htpasswd**
+
+Setelah itu di **/etc/apache2/.htpasswd** akan terdapat password yang telah di hash
+
 `luffy:$apr1$wH4MFFrm$Ch9DIJ7Yol7wLyN6eyWLN1`
 
 **general.mecha.1500**
@@ -618,50 +565,17 @@ nanti ada di **/etc/apache2/.htpasswd**
 </VirtualHost>
 ```
 
+password tersebut digunakan untuk Auth
+
 ![soal15_1](https://user-images.githubusercontent.com/57633103/139523709-dca0d4b1-b0ef-421b-a10e-7d0fcf443b70.png)
 
 ![soal15_2](https://user-images.githubusercontent.com/57633103/139523713-ccace2d7-cf95-41c9-9388-ea3db173d086.png)
-
-**Script.sh Skypie**
-```bash
-echo "nameserver 192.168.122.1" > /etc/resolv.conf
-apt-get install apache2 -y
-apt-get install php -y
-apt-get install libapache2-mod-php7.0 -y
-
-service apache2 start
-
-cp modul1/franky.e01.com.conf /etc/apache2/sites-available/franky.e01.com.conf
-cp -r file-www/franky.e01.com /var/www/
-
-# config untuk super.franky.e01.com
-cp modul1/super.franky.e01.com.conf /etc/apache2/sites-available/super.franky.e01.com.conf
-cp -r file-www/super.franky.e01.com /var/www/
-
-# config untuk general.mecha.franky.e01.com
-cp modul1/general.mecha.franky.e01.com-15000.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15000.conf
-cp modul1/general.mecha.franky.e01.com-15500.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15500.conf
-cp modul1/ports.conf /etc/apache2/ports.conf
-cp modul1/.htpasswd /etc/apache2/.htpasswd
-
-cp -r file-www/general.mecha.franky.e01.com /var/www/
-
-# Turn on all sites
-cd /etc/apache2/sites-available
-a2ensite franky.e01.com
-a2ensite super.franky.e01.com
-a2ensite general.mecha.franky.e01-15000.com
-a2ensite general.mecha.franky.e01-15500.com
-
-
-service apache2 restart
-```
 
 ## 16
 
 > Dan setiap kali mengakses IP Skypie akan diahlikan secara otomatis ke www.franky.yyy.com.
 
-a2enmod rewrite
+kita perlu menjalankan `a2enmod rewrite` untuk menyalakan modul rewrite
 
 **Skypie /var/www/franky.e01.com/.htaccess**
 ```bash
@@ -670,8 +584,6 @@ RewriteBase /
 RewriteCond %{HTTP_HOST} ^192\.200\.2\.4$
 RewriteRule ^(.*)$ http://www.franky.e01.com/$1 [L,R=301]
 ```
-
-ref: [https://fedingo.com/how-to-redirect-ip-to-domain-url-using-htaccess-in-apache/](url)
 
 **000-default**
 ```bash
@@ -700,6 +612,8 @@ RewriteCond %{REQUEST_URI} !\bfranky.png\b
 RewriteRule franky http://super.franky.e01.com/public/images/franky.png$1 [L,R=301]
 ```
 
+Pada rewrite ini, berarti kita merewrite yang bukan franky.png, dan mengganti yang memiliki substring franky
+
 **/etc/apache2/sites-available/super.franky.e01.com.conf**
 ```bash
 <VirtualHost *:80>
@@ -727,49 +641,8 @@ RewriteRule franky http://super.franky.e01.com/public/images/franky.png$1 [L,R=3
 </VirtualHost>
 ```
 
+Untuk bisa merewrite, maka kita harus menambahkan `AllowOverride`
+
 `lynx http://www.super.franky.e01.com/public`
 
 ![soal_17](https://user-images.githubusercontent.com/57633103/139524292-e55a1e44-7676-4ac3-8378-71e8f644cc19.png)
-
-**Final Skypie**
-```bash
-echo "nameserver 192.168.122.1" > /etc/resolv.conf
-apt-get install apache2 -y
-apt-get install php -y
-apt-get install libapache2-mod-php7.0 -y
-
-service apache2 start
-
-cp modul1/franky.e01.com.conf /etc/apache2/sites-available/franky.e01.com.conf
-cp -r file-www/franky.e01.com /var/www/
-
-# config untuk super.franky.e01.com
-cp modul1/super.franky.e01.com.conf /etc/apache2/sites-available/super.franky.e01.com.conf
-cp -r file-www/super.franky.e01.com /var/www/
-
-# config untuk general.mecha.franky.e01.com
-cp modul1/general.mecha.franky.com-15000.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15000.conf
-cp modul1/general.mecha.franky.com-15500.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15500.conf
-cp modul1/ports.conf /etc/apache2/ports.conf
-cp modul1/.htpasswd /etc/apache2/.htpasswd
-
-cp -r file-www/general.mecha.franky.e01.com /var/www/
-
-# Turn on all sites
-cd /etc/apache2/sites-available
-a2ensite franky.e01.com
-a2ensite super.franky.e01.com
-a2ensite general.mecha.franky.e01.com-15000
-a2ensite general.mecha.franky.e01.com-15500
-cd /root
-
-# 16 17 rewrite
-a2enmod rewrite
-
-cp modul1/000-default.conf /etc/apache2/sites-available/000-default.conf
-cp modul1/franky.htaccess /var/www/franky.e01.com/.htaccess
-cp modul1/super.htaccess /var/www/super.franky.e01.com/.htaccess
-
-service apache2 restart
-```
-
