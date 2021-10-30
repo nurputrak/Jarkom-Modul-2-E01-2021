@@ -250,7 +250,7 @@ Menambahkan Aliasnya.
 
 > Untuk memperlancar komunikasi Luffy dan rekannya, dibuatkan subdomain melalui Franky dengan nama general.mecha.frank.yyy.com dengan alias www.general.mecha.franky.yyy.com yang mengarah ke Skypie.
 
-Membuat sub-domain kemudian menambahkan alias.
+Membuat sub-domain kemudian menambahkan `alias general.mecha.franky.e01.com.`.
 
 **Water7 /etc/bind/sunnygo/mecha.franky.e01.com**
 ```shell
@@ -276,3 +276,87 @@ www.general IN  CNAME   general.mecha.franky.e01.com.
 `ping www.general.mecha.franky.e01.com`
 
 ![soal7](https://user-images.githubusercontent.com/65794806/139521280-b16ba373-2efb-4c3e-ac08-8f05f8d9594a.png)
+
+## 8
+
+> Setelah melakukan konfigurasi server, maka dilakukan konfigurasi Webserver. Pertama dengan webserver www.franky.yyy.com. Pertama, luffy membutuhkan webserver dengan DocumentRoot pada /var/www/franky.yyy.com
+
+Karena menggunakan web server, maka Config EniesLobby terlebih dahulu diarahkan ke Skypie.
+
+**EniesLobby modul1/webserver/franky.e01.com**
+```shell
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     franky.e01.com. root.franky.e01.com. (
+                        4               ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      franky.e01.com.
+@       IN      A       192.200.2.4
+www     IN      CNAME   franky.e01.com.
+super   IN      A       192.200.2.4
+www.super IN    CNAME   super.franky.e01.com.
+mecha   IN      NS      ns1
+```
+
+**EniesLobby modul1/webserver/2.200.192.in-addr-arpa**
+```shell
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     franky.e01.com. root.franky.e01.com. (
+                        2               ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+2.200.192.in-addr.arpa. IN      NS      franky.e01.com.
+2                       IN      PTR     franky.e01.com.
+```
+
+Install apache2 & php di water7 dan memasukkan dokumen htmlnya.
+**Skypie modul1/franky.e01.com**
+```shell
+<VirtualHost *:80>
+	# The ServerName directive sets the request scheme, hostname and port that
+	# the server uses to identify itself. This is used when creating
+	# redirection URLs. In the context of virtual hosts, the ServerName
+	# specifies what hostname must appear in the request's Host: header to
+	# match this virtual host. For the default virtual host (this file) this
+	# value is not decisive as it is used as a last resort host regardless.
+	# However, you must set it for any further virtual host explicitly.
+	ServerName franky.e01.com
+  ServerAlias www.franky.e01.com
+
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/franky.e01.com
+
+	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+	# error, crit, alert, emerg.
+	# It is also possible to configure the loglevel for particular
+	# modules, e.g.
+	#LogLevel info ssl:warn
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+	# For most configuration files from conf-available/, which are
+	# enabled or disabled at a global level, it is possible to
+	# include a line for only one particular virtual host. For example the
+	# following line enables the CGI configuration for this host only
+	# after it has been globally disabled with "a2disconf".
+	#Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+```
+`lynx http://www.franky.e01.com`
+
+![soal8](https://user-images.githubusercontent.com/65794806/139521462-0b028254-894d-4d1b-9735-a03bf5e30126.png)
