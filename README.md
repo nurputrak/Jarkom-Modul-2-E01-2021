@@ -668,3 +668,7 @@ Untuk bisa merewrite, maka kita harus menambahkan `AllowOverride`
 `lynx http://www.super.franky.e01.com/public`
 
 ![soal_17](https://user-images.githubusercontent.com/57633103/139524292-e55a1e44-7676-4ac3-8378-71e8f644cc19.png)
+
+### Kendala Pengerjaan
+
+Untuk pengerjaan ini kami belum menemukan kendala.
