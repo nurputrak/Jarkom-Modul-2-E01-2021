@@ -481,19 +481,295 @@ Menambahkan penggantian error ke dokumen html pada baris terakhir.
 
 > Luffy juga meminta Nami untuk dibuatkan konfigurasi virtual host. Virtual host ini bertujuan untuk dapat mengakses file asset www.super.franky.yyy.com/public/js menjadi www.super.franky.yyy.com/js.
 
+**super conf**
+```bash
+<VirtualHost *:80>
+        ServerName super.franky.e01.com
+        ServerAlias www.super.franky.e01.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/super.franky.e01.com
+
+        <Directory /var/www/super.franky.e01.com>
+                Options +Indexes
+        </Directory>
+
+        <Directory /var/www/super.franky.e01.com/public>
+                Options +Indexes
+        </Directory>
+
+        Alias "/js" "/var/www/super.franky.e01.com/public/js"
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        ErrorDocument 404 /error/404.html
+</VirtualHost>
+```
+
+`lynx http://www.super.franky.e01.com/js`
+
+![soal13](https://user-images.githubusercontent.com/57633103/139522920-279f6662-e14f-42de-ade2-a671191355b6.png)
+
 ## 14
 
 > Dan Luffy meminta untuk web www.general.mecha.franky.yyy.com hanya bisa diakses dengan port 15000 dan port 15500.
 
+**Skypie general.mecha.e01.com-15000.conf**
+```bash
+<VirtualHost *:15000>
+        ServerName general.mecha.franky.e01.com
+        ServerAlias www.general.mecha.franky.e01.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/general.mecha.franky.e01.com
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+Bikin lagi di atas buat 15500
+
+**/etc/apache2/ports/conf**
+```bash
+Listen 80
+Listen 15000
+Listen 15500
+
+<IfModule ssl_module>
+        Listen 443
+</IfModule>
+
+<IfModule mod_gnutls.c>
+        Listen 443
+</IfModule>
+```
+`lynx http://www.general.mecha.franky.e01.com:15000`
+
+![soal14_1](https://user-images.githubusercontent.com/57633103/139523221-f7e8aee2-3b02-4b6f-aef7-0cbd88aa0bc1.png)
+
+`lynx http://www.general.mecha.franky.e01.com:15500`
+
+![soal14_2](https://user-images.githubusercontent.com/57633103/139523232-6858e5e5-cde8-4bd9-bb34-8fa6cc5b131d.png)
+
+**Script Skypie**
+```bash
+echo "nameserver 192.168.122.1" > /etc/resolv.conf
+apt-get install apache2 -y
+apt-get install php -y
+apt-get install libapache2-mod-php7.0 -y
+
+service apache2 start
+
+cp modul1/franky.e01.com.conf /etc/apache2/sites-available/franky.e01.com.conf
+cp -r file-www/franky.e01.com /var/www/
+
+# config untuk super.franky.e01.com
+cp modul1/super.franky.e01.com.conf /etc/apache2/sites-available/super.franky.e01.com.conf
+cp -r file-www/super.franky.e01.com /var/www/
+
+# config untuk general.mecha.franky.e01.com
+cp modul1/general.mecha.franky.e01.com-15000.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15000.conf
+cp modul1/general.mecha.franky.e01.com-15500.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15500.conf
+cp modul1/ports.conf /etc/apache2/ports.conf
+
+cp -r file-www/general.mecha.franky.e01.com /var/www/
+
+# Turn on all sites
+cd /etc/apache2/sites-available
+a2ensite franky.e01.com
+a2ensite super.franky.e01.com
+a2ensite general.mecha.franky.e01-15000.com
+a2ensite general.mecha.franky.e01-15500.com
+
+
+service apache2 restart
+```
+
 ## 15
 
 > Dengan authentikasi username luffy dan password onepiece dan file di /var/www/general.mecha.franky.yyy.
+[https://www.digitalocean.com/community/tutorials/how-to-set-up-password-authentication-with-apache-on-ubuntu-14-04](url)
+
+Awal-awal bikin `htpasswd -c /etc/apache2/.htpasswd luffy`
+luffy : onepiece
+nanti ada di **/etc/apache2/.htpasswd**
+`luffy:$apr1$wH4MFFrm$Ch9DIJ7Yol7wLyN6eyWLN1`
+
+**general.mecha.1500**
+
+```bash
+<VirtualHost *:15000>
+        ServerName general.mecha.franky.e01.com
+        ServerAlias www.general.mecha.franky.e01.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/general.mecha.franky.e01.com
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        <Directory "var/www/general.mecha.franky.e01.com">
+                AuthType Basic
+                AuthName "Restricted Content"
+                AuthUserFile /etc/apache2/.htpasswd
+                Require valid-user
+        </Directory>
+</VirtualHost>
+```
+
+![soal15_1](https://user-images.githubusercontent.com/57633103/139523709-dca0d4b1-b0ef-421b-a10e-7d0fcf443b70.png)
+
+![soal15_2](https://user-images.githubusercontent.com/57633103/139523713-ccace2d7-cf95-41c9-9388-ea3db173d086.png)
+
+**Script.sh Skypie**
+```bash
+echo "nameserver 192.168.122.1" > /etc/resolv.conf
+apt-get install apache2 -y
+apt-get install php -y
+apt-get install libapache2-mod-php7.0 -y
+
+service apache2 start
+
+cp modul1/franky.e01.com.conf /etc/apache2/sites-available/franky.e01.com.conf
+cp -r file-www/franky.e01.com /var/www/
+
+# config untuk super.franky.e01.com
+cp modul1/super.franky.e01.com.conf /etc/apache2/sites-available/super.franky.e01.com.conf
+cp -r file-www/super.franky.e01.com /var/www/
+
+# config untuk general.mecha.franky.e01.com
+cp modul1/general.mecha.franky.e01.com-15000.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15000.conf
+cp modul1/general.mecha.franky.e01.com-15500.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15500.conf
+cp modul1/ports.conf /etc/apache2/ports.conf
+cp modul1/.htpasswd /etc/apache2/.htpasswd
+
+cp -r file-www/general.mecha.franky.e01.com /var/www/
+
+# Turn on all sites
+cd /etc/apache2/sites-available
+a2ensite franky.e01.com
+a2ensite super.franky.e01.com
+a2ensite general.mecha.franky.e01-15000.com
+a2ensite general.mecha.franky.e01-15500.com
+
+
+service apache2 restart
+```
 
 ## 16
 
 > Dan setiap kali mengakses IP Skypie akan diahlikan secara otomatis ke www.franky.yyy.com.
 
+a2enmod rewrite
+
+**Skypie /var/www/franky.e01.com/.htaccess**
+```bash
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTP_HOST} ^192\.200\.2\.4$
+RewriteRule ^(.*)$ http://www.franky.e01.com/$1 [L,R=301]
+```
+
+ref: [https://fedingo.com/how-to-redirect-ip-to-domain-url-using-htaccess-in-apache/](url)
+
+**000-default**
+```bash
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/franky.e01.com"
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+
+`lynx 192.200.2.4`
+
+![soal_16](https://user-images.githubusercontent.com/57633103/139524091-179fd929-b933-4062-81aa-f3152b2ddbb4.png)
+
 ## 17
 
 > Dikarenakan Franky juga ingin mengajak temannya untuk dapat menghubunginya melalui website www.super.franky.yyy.com, dan dikarenakan pengunjung web server pasti akan bingung dengan randomnya images yang ada, maka Franky juga meminta untuk mengganti request gambar yang memiliki substring “franky” akan diarahkan menuju franky.png. Maka bantulah Luffy untuk membuat konfigurasi dns dan web server ini!
+
+**/var/www/super.franky.e01.com/.htaccess**
+```bash
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_URI} !\bfranky.png\b
+RewriteRule franky http://super.franky.e01.com/public/images/franky.png$1 [L,R=301]
+```
+
+**/etc/apache2/sites-available/super.franky.e01.com.conf**
+```bash
+<VirtualHost *:80>
+        ServerName super.franky.e01.com
+        ServerAlias www.super.franky.e01.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/super.franky.e01.com
+
+        <Directory /var/www/super.franky.e01.com>
+                Options +Indexes
+                AllowOverride All
+        </Directory>
+
+        <Directory /var/www/super.franky.e01.com/public>
+                Options +Indexes
+        </Directory>
+
+        Alias "/js" "/var/www/super.franky.e01.com/public/js"
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        ErrorDocument 404 /error/404.html
+</VirtualHost>
+```
+
+`lynx http://www.super.franky.e01.com/public`
+
+![soal_17](https://user-images.githubusercontent.com/57633103/139524292-e55a1e44-7676-4ac3-8378-71e8f644cc19.png)
+
+**Final Skypie**
+```bash
+echo "nameserver 192.168.122.1" > /etc/resolv.conf
+apt-get install apache2 -y
+apt-get install php -y
+apt-get install libapache2-mod-php7.0 -y
+
+service apache2 start
+
+cp modul1/franky.e01.com.conf /etc/apache2/sites-available/franky.e01.com.conf
+cp -r file-www/franky.e01.com /var/www/
+
+# config untuk super.franky.e01.com
+cp modul1/super.franky.e01.com.conf /etc/apache2/sites-available/super.franky.e01.com.conf
+cp -r file-www/super.franky.e01.com /var/www/
+
+# config untuk general.mecha.franky.e01.com
+cp modul1/general.mecha.franky.com-15000.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15000.conf
+cp modul1/general.mecha.franky.com-15500.conf /etc/apache2/sites-available/general.mecha.franky.e01.com-15500.conf
+cp modul1/ports.conf /etc/apache2/ports.conf
+cp modul1/.htpasswd /etc/apache2/.htpasswd
+
+cp -r file-www/general.mecha.franky.e01.com /var/www/
+
+# Turn on all sites
+cd /etc/apache2/sites-available
+a2ensite franky.e01.com
+a2ensite super.franky.e01.com
+a2ensite general.mecha.franky.e01.com-15000
+a2ensite general.mecha.franky.e01.com-15500
+cd /root
+
+# 16 17 rewrite
+a2enmod rewrite
+
+cp modul1/000-default.conf /etc/apache2/sites-available/000-default.conf
+cp modul1/franky.htaccess /var/www/franky.e01.com/.htaccess
+cp modul1/super.htaccess /var/www/super.franky.e01.com/.htaccess
+
+service apache2 restart
+```
 
